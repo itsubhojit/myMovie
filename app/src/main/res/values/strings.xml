@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">MovieQueryApp</string>
+    <string name="movieTitle">movie_title</string>
+    <string name="most_popular">Most Popular</string>
+    <string name="top_rated">Top Rated</string>
+    <string name="no_internet_connection_please_try_again">Failed to fetch the data.   No internet connection.</string>
+    <string name="text_data">Simple Json Data</string>
+    <string name="refresh">Home</string>
+    <string name="todo">TODO</string>
+    <string name="no_0">No.0</string>
+    <string name="data">Data</string>
+    <string name="title">Title :</string>
+    <string name="original_title">original_title</string>
+    <string name="dttitle">dtTitle</string>
+    <string name="release_date">release_date</string>
+    <string name="rating">Rating</string>
+    <string name="plot_synopsis">Plot Synopsis</string>
+</resources>
