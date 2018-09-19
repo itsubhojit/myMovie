@@ -1,5 +1,6 @@
 package com.example.android.moviequeryapp;
 
+import android.app.LauncherActivity;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -8,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.example.android.moviequeryapp.models.MovieModel;
 import com.squareup.picasso.Picasso;
 import java.util.List;
@@ -21,9 +21,10 @@ public class PopularMovieAdapter extends RecyclerView.Adapter<PopularMovieAdapte
     private String imageUrl = "http://image.tmdb.org/t/p/w342//";
 
 
-    PopularMovieAdapter(List<MovieModel> movieModels){
-        this.movieList = movieModels;
+    public PopularMovieAdapter(List<MovieModel> itemList){
+        this.movieList = itemList;
         Log.d(TAG, " : PassedBy#Subhojit -> PopularMovieAdapter - Contructor");
+
     }
 
 
@@ -31,7 +32,7 @@ public class PopularMovieAdapter extends RecyclerView.Adapter<PopularMovieAdapte
     @Override
     public MovieViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        View newView = inflater.inflate(R.layout.single_image_text_view, parent, false);
+        View newView = inflater.inflate(R.layout.movie_album_layout, parent, false);
       Log.d(TAG, " : PassedBy#Subhojit -> PopularMovieAdapter - onCreate");
 
         return new MovieViewHolder(newView);
@@ -41,7 +42,7 @@ public class PopularMovieAdapter extends RecyclerView.Adapter<PopularMovieAdapte
     @Override
     public void onBindViewHolder(@NonNull MovieViewHolder holder, int position) {
 
-        holder.txtTitle.setText(movieList.get(position).getOriginal_title());
+        holder.txtTitle.setText(movieList.get(position).getTitle());
         Picasso.get().load(imageUrl + movieList.get(position).getPoster_path()).into(holder.imgPoster);
         Log.d(TAG, " : PassedBy#Subhojit -> PopularMovieAdapter - onBindViewHolder");
 
@@ -58,15 +59,15 @@ public class PopularMovieAdapter extends RecyclerView.Adapter<PopularMovieAdapte
     }
 
 
-    public class MovieViewHolder extends RecyclerView.ViewHolder {
+    public static class MovieViewHolder extends RecyclerView.ViewHolder {
 
         TextView txtTitle;
         ImageView imgPoster;
 
         public MovieViewHolder(View itemView) {
             super(itemView);
-            txtTitle = itemView.findViewById(R.id.gridItem_movieTitle);
-            imgPoster = itemView.findViewById(R.id.gridItem_moviePoster);
+            txtTitle = itemView.findViewById(R.id.movieTitle);
+            imgPoster = itemView.findViewById(R.id.moviePoster);
             Log.d(TAG, " : PassedBy#Subhojit -> PopularMovieAdapter - MovieViewHolder");
         }
     }

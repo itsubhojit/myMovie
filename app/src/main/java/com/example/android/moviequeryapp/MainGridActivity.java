@@ -28,6 +28,7 @@ public class MainGridActivity extends AppCompatActivity {
         private RecyclerView mRecyclerView;
         private PopularMovieAdapter pMovieAdapter;
         private List<MovieModel> movieModels;
+        private RecyclerView.LayoutManager layoutManager;
 
     @Override
         public void onCreate(Bundle savedInstanceState) {
@@ -185,7 +186,7 @@ public class BackgroundTask_AsyncTask extends AsyncTask<URL, String, List<MovieM
 //        }
 //        Log.d(TAG, " : PassedBy#Subhojit -> onPostExecute - END");
         if(results != null){
-            RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getApplicationContext(),2);
+            layoutManager = new GridLayoutManager(getApplicationContext(),2);
             mRecyclerView.setLayoutManager(layoutManager);
             mRecyclerView.setHasFixedSize(true);
             pMovieAdapter = new PopularMovieAdapter(results);

@@ -9,12 +9,11 @@
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_movieItems"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="vertical"
         android:layout_margin="5dp"
-        android:columnWidth="160dp"
         android:gravity="center"
-        android:numColumns="2"
         android:padding="16dp"
         android:stretchMode="columnWidth" />
 
