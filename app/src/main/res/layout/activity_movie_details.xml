@@ -4,107 +4,121 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".MovieDetails">
-    <ImageView
-        android:id="@+id/moviePoster"
-        android:layout_width="180dp"
-        android:layout_height="260dp"
-        android:padding="5dp"
-        android:layout_gravity="top"
-        android:layout_margin="5dp"
-        android:scaleType="fitCenter"
-        android:background="@android:color/darker_gray"
-        />
-
-
     <LinearLayout
+        android:id="@+id/parentLinearLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/ad">
-
+        android:orientation="vertical">
         <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:showIn="@layout/activity_movie_details">
-
+            android:layout_height="match_parent">
             <android.support.constraint.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
-
-
-                <TextView
-                    android:id="@+id/originalTitle"
+                <ImageView
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true"
-                    android:layout_alignParentEnd="true"
-                    android:textSize="20sp"
+                    android:layout_height="450dp"
+                    android:id="@+id/moviePoster"
+                    android:scaleType="fitXY"
+                    android:padding="10dp"
+                    android:src="@drawable/exorcist"
                     app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:layout_constraintLeft_creator="1"
-                    tools:layout_constraintTop_creator="1" />
+                    app:layout_constraintTop_toTopOf="parent"/>
 
                 <TextView
-                    android:id="@+id/releaseDate"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="20sp"
-                />
+                    android:id="@+id/originalTitle"
+                    android:textSize="25sp"
+                    android:textStyle="bold"
+                    android:padding="2dp"
+                    android:text="@string/title"
+                    app:layout_constraintTop_toBottomOf="@+id/moviePoster"
+                    android:layout_marginStart="16dp"
+                    tools:layout_constraintTop_creator ="1"
+                    tools:layout_constraintLeft_creator ="1"
+                    />
 
                 <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:id="@+id/voteAverage"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
                     android:textSize="20sp"
+                    android:padding="2dp"
+                    android:text="@string/rating"
                     app:layout_constraintTop_toBottomOf="@+id/originalTitle"
                     android:layout_marginStart="16dp"
                     app:layout_constraintLeft_toLeftOf="parent"
                     tools:layout_constraintTop_creator="1" />
 
                 <TextView
-                    android:id="@+id/overView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-
-
+                    android:id="@+id/releaseDate"
+                    android:textSize="20sp"
+                    android:padding="2dp"
+                    android:layout_marginStart="16dp"
+                    android:text="@string/release_date"
+                    app:layout_constraintTop_toBottomOf="@+id/voteAverage"
                     app:layout_constraintLeft_toLeftOf="parent" />
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/thumbnailUrl"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    android:visibility="invisible"/>
+                    android:id="@+id/overView"
+                    android:textSize="20sp"
+                    android:padding="2dp"
+                    android:layout_marginStart="16dp"
+                    android:text="@string/plot_synopsis"
+                    app:layout_constraintTop_toBottomOf="@+id/releaseDate"
+                    app:layout_constraintLeft_toLeftOf="parent" />
 
-                <TextView
-                    android:id="@+id/trailer"
-                    android:layout_width="match_parent"
+                <CheckBox
+                    android:id="@+id/checkBoxFavorite"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="30sp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginStart="8dp"
+                    android:button="@drawable/sharp_favorite_border_black_18dp"
+                    android:gravity="center_horizontal"
+                    android:onClick="OnClickedFavorite"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/favoriteTxt"
+                    android:layout_marginBottom="10dp"
                     />
 
-                <com.github.ivbaranov.mfb.MaterialFavoriteButton
-                    android:id="@+id/favorite_button"
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
-                    android:layout_alignParentRight="true"
-                    android:background="@color/colorPrimary"/>
 
+                <TextView
+                    android:id="@+id/favoriteTxt"
+                    android:layout_width="match_parent"
+                    android:layout_height="41dp"
+                    android:gravity="center_horizontal"
+                    android:layout_marginTop="10dp"
+                    android:paddingTop="3dp"
+                    android:text="Favorite "
+                    android:textSize="30sp"
+                    app:layout_constraintBottom_toTopOf="@+id/checkBoxFavorite"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/overView"
+                    app:layout_constraintVertical_bias="0.0" />
                 <android.support.v7.widget.RecyclerView
-                    android:id="@+id/recycler_view1"
+                    android:id="@+id/recyclerViewTrailer"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:clipToPadding="false"
                     android:scrollbars="vertical"
-                    app:layout_constraintTop_toBottomOf="@+id/trailer"
-                    app:layout_constraintLeft_toLeftOf="parent" />
+                    android:layout_margin="5dp"
+                    android:gravity="center"
+                    android:padding="16dp"
+                    android:stretchMode="columnWidth"
+                    app:layout_constraintTop_toBottomOf="@+id/checkBoxFavorite"
+
+                    />
 
 
             </android.support.constraint.ConstraintLayout>
-
         </ScrollView>
-
     </LinearLayout>
-
-
 </RelativeLayout>

@@ -1,4 +1,4 @@
-package com.example.android.moviequeryapp;
+package com.example.android.moviequeryapp.internet;
 
 import android.util.Log;
 import com.example.android.moviequeryapp.models.MovieModel;
@@ -37,6 +37,7 @@ public final class ConvertJsonUnits {
                     JSONObject finalJO = parentJA.getJSONObject(i);
                     MovieModel movieModel = new MovieModel();
 
+                    movieModel.setId(finalJO.getInt("id"));
                     movieModel.setTitle(finalJO.getString("title"));
                     movieModel.setOriginal_title(finalJO.getString("original_title"));
                     movieModel.setRelease_date(finalJO.getString("release_date"));

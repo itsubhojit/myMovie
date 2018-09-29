@@ -1,5 +1,4 @@
-package com.example.android.moviequeryapp;
-import android.graphics.Color;
+package com.example.android.moviequeryapp.adapters;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,19 +7,22 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.example.android.moviequeryapp.R;
+import com.example.android.moviequeryapp.models.MovieResponse;
 import com.example.android.moviequeryapp.models.MovieModel;
-import com.squareup.picasso.Picasso;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class SingleViewAdapter extends BaseAdapter {
+public class SingleViewAdapter  { //extends BaseAdapter
     private static final String TAG = SingleViewAdapter.class.getSimpleName();
     private Context mContext;
     private List<MovieModel> movieModelList;
     private LayoutInflater inflater;
 
-
-    public SingleViewAdapter(Context c, List<MovieModel> movieList) {
+/*
+    public SingleViewAdapter(Context c, List<MovieListResult> movieList) {
         mContext = c;
         movieModelList = movieList;
         inflater = LayoutInflater.from(c);
@@ -81,5 +83,5 @@ public class SingleViewAdapter extends BaseAdapter {
 
     public void updateMovies(ArrayList<MovieModel> items){
         this.movieModelList = items;
-    }
+    }*/
 }

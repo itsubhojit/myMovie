@@ -24,11 +24,12 @@
         android:layout_gravity="center"
         android:fontFamily="monospace"
         android:text="@string/no_internet_connection_please_try_again"
-        android:visibility="visible" />
+        android:visibility="invisible" />
     <ProgressBar
         android:id="@+id/loadingIndecator"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
+        android:visibility="invisible"
         />
 </FrameLayout>
