@@ -21,6 +21,7 @@ public class MovieAPI {
            .baseUrl(BASE_URL)
            .addConverterFactory(GsonConverterFactory.create())
            .build();
+   Log.d(TAG, "Subhojit --> getClient()" + retrofit.toString());
   }
   return retrofit;
  }

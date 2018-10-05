@@ -23,4 +23,6 @@
     <string name="pref_favorite_movie_key" translatable="false">Favorite Movies</string>
     <string name="pref_movie_key" translatable="false">com.example.android.moviequeryapp.movie</string>
     <string name="official_trailers">Official Trailers</string>
+    <string name="author_name">Author</string>
+    <string name="short_note">Short Note</string>
 </resources>

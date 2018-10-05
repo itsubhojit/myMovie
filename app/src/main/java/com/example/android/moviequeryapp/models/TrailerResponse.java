@@ -9,16 +9,17 @@ public class TrailerResponse {
 
     @SerializedName("id")
     @Expose
-    private Integer id;
+    private int id;
+
     @SerializedName("results")
     @Expose
-    private List<TrailerList> results = null;
+    private List<TrailerList> results;
 
-    public Integer getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(int id) {
         this.id = id;
     }
 

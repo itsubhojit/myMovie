@@ -56,7 +56,7 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.MyTraile
         public MyTrailerViewHolder(View itemView) {
             super(itemView);
             title = itemView.findViewById(R.id.trailer_title);
-            rating = itemView.findViewById(R.id.trailer_rating);
+//            rating = itemView.findViewById(R.id.trailer_rating);
             thumbnail = itemView.findViewById(R.id.trailer_poster);
 
             itemView.setOnClickListener(new View.OnClickListener(){

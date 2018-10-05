@@ -46,13 +46,12 @@ public class MainGridActivity extends AppCompatActivity implements SharedPrefere
     private RecyclerView mRecyclerView;
     private PopularMovieAdapter movieAdapter;
     private RecyclerView.LayoutManager layoutManager;
-    private static Retrofit retrofit = null;
-    public static final String BASE_URL = "http://api.themoviedb.org";
+//    private static Retrofit retrofit = null;
+//    public static final String BASE_URL = "http://api.themoviedb.org";
     private List<MovieList> movieLists;
-    private String API_Key = null;
-//    List<MovieList> movieList = new ArrayList<>();
-    private FavoriteMovieDbHelper favoriteDbHelper;
-    private AppCompatActivity activity = MainGridActivity.this;
+    private String API_Key = "";
+//    private FavoriteMovieDbHelper favoriteDbHelper;
+//    private AppCompatActivity activity = MainGridActivity.this;
     private FavoriteTaskDB mDb;
     private FavoriteMovieAdapter favoriteMovieAdapter;
 

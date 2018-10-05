@@ -1,7 +1,10 @@
 package com.example.android.moviequeryapp.api;
 
 
+import android.util.Log;
+
 import com.example.android.moviequeryapp.models.MovieResponse;
+import com.example.android.moviequeryapp.models.ReviewResponse;
 import com.example.android.moviequeryapp.models.TrailerList;
 import com.example.android.moviequeryapp.models.TrailerResponse;
 
@@ -20,5 +23,8 @@ public interface API_Service {
 
     @GET("movie/{movie_id}/videos")
     Call<TrailerResponse> getTrailers(@Path("movie_id") int id, @Query("api_key") String apiKey);
+
+    @GET("movie/{movie_id}/reviews")
+    Call<ReviewResponse> getReviews(@Path("movie_id") int id, @Query("api_key") String apiKey);
 
 }

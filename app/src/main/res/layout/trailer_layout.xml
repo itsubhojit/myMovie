@@ -28,16 +28,16 @@
                 android:layout_height="wrap_content"
                 android:text="Trailer Movie Title"
                 android:textSize="15dp"
-                android:textStyle="italic"
+                android:textStyle="bold"
                 android:textColor="@color/black"
                 android:padding="1dp"/>
 
-            <TextView
+         <!--   <TextView
                 android:id="@+id/trailer_rating"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Reating"
-                android:padding="1dp"/>
+                android:padding="1dp"/>-->
 
         </LinearLayout>
     </LinearLayout>
