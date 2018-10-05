@@ -3,6 +3,7 @@
     <string-array name="pref_sort_movie_items">
         <item>@string/pref_popular_movie_key</item>
         <item>@string/pref_top_rated_movie_key</item>
+        <item>@string/pref_favorite_movie_key</item>
     </string-array>
     
 

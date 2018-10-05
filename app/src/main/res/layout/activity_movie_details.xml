@@ -83,7 +83,7 @@
                     android:layout_marginStart="8dp"
                     android:button="@drawable/sharp_favorite_border_black_18dp"
                     android:gravity="center_horizontal"
-                    android:onClick="OnClickedFavorite"
+                    android:checked="false"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/favoriteTxt"
@@ -104,6 +104,20 @@
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/overView"
                     app:layout_constraintVertical_bias="0.0" />
+
+                <TextView
+                    android:id="@+id/txtTrailer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/official_trailers"
+                    android:textSize="25sp"
+                    android:textStyle="bold"
+                    android:layout_margin="5dp"
+                    android:paddingStart="10dp"
+                    android:textColor="@color/orange"
+                    android:background="@color/dark_gray"
+                    app:layout_constraintTop_toBottomOf="@+id/checkBoxFavorite"/>
+
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/recyclerViewTrailer"
                     android:layout_width="match_parent"
@@ -113,7 +127,7 @@
                     android:gravity="center"
                     android:padding="16dp"
                     android:stretchMode="columnWidth"
-                    app:layout_constraintTop_toBottomOf="@+id/checkBoxFavorite"
+                    app:layout_constraintTop_toBottomOf="@+id/txtTrailer"
 
                     />
 

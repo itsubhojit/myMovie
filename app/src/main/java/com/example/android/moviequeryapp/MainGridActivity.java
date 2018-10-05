@@ -1,10 +1,14 @@
 package com.example.android.moviequeryapp;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.preference.PreferenceManager;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
@@ -15,13 +19,17 @@ import android.widget.TextView;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.example.android.moviequeryapp.adapters.FavoriteMovieAdapter;
 import com.example.android.moviequeryapp.adapters.PopularMovieAdapter;
-import com.example.android.moviequeryapp.api.MovieAPI;
 import com.example.android.moviequeryapp.api.API_Service;
-import com.example.android.moviequeryapp.internet.NetworkUtils;
+import com.example.android.moviequeryapp.api.MovieAPI;
+import com.example.android.moviequeryapp.db.FavoriteMovieDbHelper;
+import com.example.android.moviequeryapp.db.FavoriteTaskDB;
+import com.example.android.moviequeryapp.db.FavoriteTaskEntry;
 import com.example.android.moviequeryapp.models.MovieList;
 import com.example.android.moviequeryapp.models.MovieResponse;
-import java.net.URL;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -38,10 +46,15 @@ public class MainGridActivity extends AppCompatActivity implements SharedPrefere
     private RecyclerView mRecyclerView;
     private PopularMovieAdapter movieAdapter;
     private RecyclerView.LayoutManager layoutManager;
-    API_Service apiService;
     private static Retrofit retrofit = null;
     public static final String BASE_URL = "http://api.themoviedb.org";
-    private List<MovieResponse> movieLists = null;
+    private List<MovieList> movieLists;
+    private String API_Key = null;
+//    List<MovieList> movieList = new ArrayList<>();
+    private FavoriteMovieDbHelper favoriteDbHelper;
+    private AppCompatActivity activity = MainGridActivity.this;
+    private FavoriteTaskDB mDb;
+    private FavoriteMovieAdapter favoriteMovieAdapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -55,112 +68,23 @@ public class MainGridActivity extends AppCompatActivity implements SharedPrefere
         loading = findViewById(R.id.loadingIndecator);
         layoutManager = new GridLayoutManager(getApplicationContext(), 2);
 
-       /* if(getString(R.string.API_KEY) == null ){
+        API_Key = getString(R.string.API_KEY);
+        if(API_Key.isEmpty()){
             showAPIErrorMessage();
             return;
-        }*/
-//        checkSelectedMovieLists();
-        loadTopRatedMovies();
-    }
-
-
-    public void loadTopRatedMovies() {
-        if (retrofit == null) {
-            retrofit = new Retrofit.Builder()
-                    .baseUrl(BASE_URL)
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .build();
         }
-        apiService = retrofit.create(API_Service.class);
-        Call<MovieList> call = apiService.getTopRatedMovies(getString(R.string.API_KEY));
-        Log.d(TAG, " : #Subhojit -> API SERVICE..");
-
-        call.enqueue(new Callback<MovieList>() {
-            @Override
-            public void onResponse(Call<MovieList> call, Response<MovieList> response) {
-                Log.d(TAG, " : #Subhojit -> topRatedOnResponse..");
-                movieLists = response.body().getResults();
-                Log.d(TAG, " : #Subhojit -> topRatedOnResponded..");
-
-                if (!response.isSuccessful() && movieLists.isEmpty()) {
-                    Log.d(TAG, " : #Subhojit -> No Response!!");
-                    return;
-                }
-
-                Log.d(TAG, " : #Subhojit -> Responding..");
-                mRecyclerView.setLayoutManager(layoutManager);
-                mRecyclerView.setHasFixedSize(true);
-                mRecyclerView.setVisibility(View.VISIBLE);
-                movieAdapter = new PopularMovieAdapter(getApplicationContext(), movieLists);
-                mRecyclerView.setAdapter(movieAdapter);
-                Log.d(TAG, "Number of movies received: " + movieLists.size());
-            }
-
-            @Override
-            public void onFailure(Call<MovieList> call, Throwable throwable) {
-                Log.e(TAG, throwable.toString());
-            }
-        });
+//        mDb = FavoriteTaskDB.getInstance(getApplicationContext());
+        checkSelectedMovieLists();
     }
 
-    public void loadPopularMovies() {
-        if (retrofit == null) {
-            retrofit = new Retrofit.Builder()
-                    .baseUrl(BASE_URL)
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .build();
-        }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d(TAG, " : PassedBy#Subhojit -> onResume");
+        //favoriteMovieAdapter.setTasks();
 
-        apiService = retrofit.create(API_Service.class);
-        Call<MovieList> call = apiService.getPopularMovies(getString(R.string.API_KEY));
-        Log.d(TAG, " : #Subhojit -> API SERVICE..");
-
-        call.enqueue(new Callback<MovieList>() {
-            @Override
-            public void onResponse(Call<MovieList> call, Response<MovieList> response) {
-                Log.d(TAG, " : #Subhojit -> onResponse..");
-                List<MovieResponse> movies = response.body().getResults();
-                Log.d(TAG, " : #Subhojit -> onResponse.." + movies.size());
-
-                if (!response.isSuccessful()) {
-                    Log.d(TAG, " : #Subhojit -> No Response!!");
-                    return;
-                }
-
-                Log.d(TAG, " : #Subhojit -> Responding..");
-                mRecyclerView.setLayoutManager(layoutManager);
-                mRecyclerView.setHasFixedSize(true);
-                mRecyclerView.setVisibility(View.VISIBLE);
-                mRecyclerView.setAdapter(new PopularMovieAdapter(getApplicationContext(), movies));
-                Log.d(TAG, "Number of movies received: " + movies.size());
-            }
-
-            @Override
-            public void onFailure(Call<MovieList> call, Throwable throwable) {
-                Log.e(TAG, throwable.toString());
-                showErrorMessage();
-            }
-        });
+        checkSelectedMovieLists();
     }
-
-
-    public void toastMessage(String anyText) {
-        Toast.makeText(getApplicationContext(), anyText, Toast.LENGTH_SHORT).show();
-    }
-
-
-    private void checkSelectedMovieLists() {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        String sortOrder = preferences.getString(this.getString(R.string.pref_movie_key),
-                this.getString(R.string.pref_popular_movie_key));
-
-        if (sortOrder.equals(this.getString(R.string.pref_popular_movie_key))) {
-            loadPopularMovies();
-        } else {
-            loadTopRatedMovies();
-        }
-    }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -168,7 +92,6 @@ public class MainGridActivity extends AppCompatActivity implements SharedPrefere
         getMenuInflater().inflate(R.menu.menu, menu);
         return true;
     }
-
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -186,23 +109,123 @@ public class MainGridActivity extends AppCompatActivity implements SharedPrefere
         }
     }
 
+    public void loadTopRatedMovies() {
+        Log.d(TAG, " : #Subhojit -> loadTopRatedMovies");
+        /*if (retrofit == null) {
+            retrofit = new Retrofit.Builder()
+                    .baseUrl(BASE_URL)
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
+        }
+        apiService = retrofit.create(API_Service.class);*/
+        loading.setVisibility(View.VISIBLE);
 
+        API_Service apiService = MovieAPI.getClient().create(API_Service.class);
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        Log.d(TAG, " : PassedBy#Subhojit -> onResume");
+        Call<MovieResponse> call = apiService.getTopRatedMovies(getString(R.string.API_KEY));
 
-//        checkSelectedMovieLists();
+        call.enqueue(new Callback<MovieResponse>() {
+            @Override
+            public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
+                Log.d(TAG, " : #Subhojit -> LoadTopRated_OnResponse..");
+
+                movieLists = response.body().getResults();
+
+                if (!response.isSuccessful()) {
+                    Log.d(TAG, " : #Subhojit -> No_Response!!");
+                    return;
+                }
+
+                Log.d(TAG, " : #Subhojit -> Responding..");
+                mRecyclerView.setLayoutManager(layoutManager);
+                mRecyclerView.setHasFixedSize(true);
+                movieAdapter = new PopularMovieAdapter(getApplicationContext(), movieLists);
+                mRecyclerView.setAdapter(movieAdapter);
+                movieAdapter.notifyDataSetChanged();
+                loading.setVisibility(View.INVISIBLE);
+                showMovie();
+                Log.d(TAG, "Number of movies received: " + movieLists.size());
+            }
+
+            @Override
+            public void onFailure(Call<MovieResponse> call, Throwable throwable) {
+                Log.e(TAG, throwable.toString());
+            }
+        });
     }
 
-    public void loadVideoTrailer() {
-        String x = getString(R.string.API_KEY);
-        URL url = NetworkUtils.buildVideoUrl(15, getString(R.string.API_KEY));
-        Toast.makeText(this, url.toString(), Toast.LENGTH_SHORT).show();
+    public void loadPopularMovies() {
+        loading.setVisibility(View.VISIBLE);
+        /*if (retrofit == null) {
+            retrofit = new Retrofit.Builder()
+                    .baseUrl(BASE_URL)
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();}*/
 
-//            new BackgroundTask_AsyncTask().execute(url);
-//            showMovie();
+        API_Service apiService = MovieAPI.getClient().create(API_Service.class);
+        Call<MovieResponse> call = apiService.getPopularMovies(getString(R.string.API_KEY));
+        Log.d(TAG, " : #Subhojit -> API SERVICE");
+
+        call.enqueue(new Callback<MovieResponse>() {
+            @Override
+            public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
+                List<MovieList> movies = response.body().getResults();
+                Log.d(TAG, " : #Subhojit -> onResponse.." + movies.size());
+
+                if (!response.isSuccessful()) {
+                    Log.d(TAG, " : #Subhojit -> No Response!!");
+                    return;
+                }
+
+                Log.d(TAG, " : #Subhojit -> Responding..");
+                mRecyclerView.setLayoutManager(layoutManager);
+                mRecyclerView.setHasFixedSize(true);
+                movieAdapter = new PopularMovieAdapter(getApplicationContext(), movies);
+                mRecyclerView.setAdapter(movieAdapter);
+                movieAdapter.notifyDataSetChanged();
+                loading.setVisibility(View.INVISIBLE);
+                showMovie();
+            }
+
+            @Override
+            public void onFailure(Call<MovieResponse> call, Throwable throwable) {
+                Log.e(TAG, throwable.toString());
+                showErrorMessage();
+            }
+        });
+    }
+
+    private void loadFavoriteLists() {
+        List<FavoriteTaskEntry> lists = new ArrayList<>();
+
+        mRecyclerView.setLayoutManager(layoutManager);
+        mRecyclerView.setHasFixedSize(true);
+        favoriteMovieAdapter = new FavoriteMovieAdapter(this, lists);
+
+       /* if (getActivity().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
+            recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+        } else {
+            recyclerView.setLayoutManager(new GridLayoutManager(this, 4));
+        }*/
+
+        mRecyclerView.setAdapter(favoriteMovieAdapter);
+        FetchFavoriteMovie();
+        favoriteMovieAdapter.notifyDataSetChanged();
+
+    }
+
+    private void checkSelectedMovieLists() {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        String sortOrder = preferences.getString(this.getString(R.string.pref_movie_key),
+                this.getString(R.string.pref_popular_movie_key));
+
+        if(sortOrder.equals(this.getString(R.string.pref_favorite_movie_key))) {
+            loadFavoriteLists();
+        }else if(sortOrder.equals(this.getString(R.string.pref_top_rated_movie_key))){
+            loadTopRatedMovies();
+        }else{
+            loadPopularMovies();
+        }
     }
 
     public void showMovie() {
@@ -213,12 +236,13 @@ public class MainGridActivity extends AppCompatActivity implements SharedPrefere
 
     public void showErrorMessage() {
         Log.d(TAG, " : PassedBy#Subhojit -> showErrorMessage(){}");
-
+        loading.setVisibility(View.INVISIBLE);
         textErrorMessage.setVisibility(View.VISIBLE);
         mRecyclerView.setVisibility(View.INVISIBLE);
     }
 
     public void showAPIErrorMessage() {
+        toastMessage("No API Key found!");
         textErrorMessage.setVisibility(View.VISIBLE);
         textErrorMessage.setText("API Key is empty!");
         loading.setVisibility(View.INVISIBLE);
@@ -230,9 +254,39 @@ public class MainGridActivity extends AppCompatActivity implements SharedPrefere
         checkSelectedMovieLists();
     }
 
+    public void toastMessage(String anyText) {
+        Toast.makeText(getApplicationContext(), anyText, Toast.LENGTH_SHORT).show();
+    }
+
+    private void FetchFavoriteMovie(){
+        mDb = FavoriteTaskDB.getInstance(getApplicationContext());
+        favoriteMovieAdapter.setTasks(mDb.favoriteTaskDAO().loadAllTasks());
+        favoriteMovieAdapter.notifyDataSetChanged();
+
+
+        /*movieLists.clear();
+        movieLists.addAll(favoriteDbHelper.getAllFavorite());
+        movieAdapter.notifyDataSetChanged();*/
+
+      /*  new AsyncTask<Void, Void, Void>(){
+
+            @Override
+            protected Void doInBackground(Void... voids) {
+                movieLists.clear();
+                movieLists.addAll(favoriteDbHelper.getAllFavorite());
+                return null;
+            }
+
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                movieAdapter.notifyDataSetChanged();
+            }
+        }.execute();*/
+    }
 }
 
-
+//////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /*        public void loadPopularMovies(){
             Log.d(TAG, " : PassedBy#Subhojit -> MainGridActivity - loadPopularMovies()");

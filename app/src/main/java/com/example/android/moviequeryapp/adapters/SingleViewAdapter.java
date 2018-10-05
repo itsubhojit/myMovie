@@ -1,18 +1,9 @@
 package com.example.android.moviequeryapp.adapters;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.content.Context;
-import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.ImageView;
-import android.widget.TextView;
 
-import com.example.android.moviequeryapp.R;
-import com.example.android.moviequeryapp.models.MovieResponse;
 import com.example.android.moviequeryapp.models.MovieModel;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class SingleViewAdapter  { //extends BaseAdapter
