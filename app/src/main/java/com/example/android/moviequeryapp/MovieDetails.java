@@ -1,5 +1,8 @@
 package com.example.android.moviequeryapp;
 
+import android.annotation.SuppressLint;
+import android.arch.persistence.room.Index;
+import android.arch.persistence.room.util.TableInfo;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
@@ -15,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.android.moviequeryapp.adapters.ReviewAdapter;
 import com.example.android.moviequeryapp.adapters.TrailerAdapter;
 import com.example.android.moviequeryapp.api.API_Service;
 import com.example.android.moviequeryapp.api.MovieAPI;
@@ -26,7 +30,10 @@ import com.example.android.moviequeryapp.models.ReviewResponse;
 import com.example.android.moviequeryapp.models.ReviewResult;
 import com.example.android.moviequeryapp.models.TrailerList;
 import com.example.android.moviequeryapp.models.TrailerResponse;
+import com.google.gson.JsonSyntaxException;
 import com.squareup.picasso.Picasso;
+
+import org.w3c.dom.Text;
 
 import java.util.List;
 import java.util.Objects;
@@ -41,10 +48,11 @@ public class MovieDetails extends AppCompatActivity implements SharedPreferences
     private String movieTitle, movieReleaseDate, movieOverview, moviePosterPath;
     private Double movieRating;
     private static final String TAG = MovieDetails.class.getSimpleName();
-    private TextView nameOfMovie, releaseDate, userRating, plotSynopsis;
+    private TextView nameOfMovie, releaseDate, userRating, plotSynopsis, txtReview;
     private ImageView moviePoster;
     private String BaseImageUrl = "http://image.tmdb.org/t/p/w342//";
-    private RecyclerView recyclerViewTrailer;
+    private ReviewAdapter reviewAdapter;
+    private RecyclerView recyclerViewTrailer, recyclerViewReviews;
     private RecyclerView.LayoutManager layoutManager;
     private TrailerAdapter trailerAdapter;
     private static boolean favStatus = true;
@@ -61,14 +69,13 @@ public class MovieDetails extends AppCompatActivity implements SharedPreferences
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_details);
-         favoriteCheckbox = findViewById(R.id.checkBoxFavorite);
+        favoriteCheckbox = findViewById(R.id.checkBoxFavorite);
+        recyclerViewReviews = findViewById(R.id.recyclerViewReviews);
+        txtReview = findViewById(R.id.Review);
 
         mDB = FavoriteTaskDB.getInstance(getApplicationContext());
 
-        //checkFavoriteMovieStatus();
-
-        addOrRemoveMovieInSqlite();
-
+        loadFavoriteCheckBoxListener();
         getIncomingIntent();
     }
 
@@ -83,7 +90,6 @@ public class MovieDetails extends AppCompatActivity implements SharedPreferences
     }
 
     private void getIncomingIntent(){
-
         if (getIntent().hasExtra("title") && getIntent().hasExtra("release_date")){
 //            Intent intentThatStartedThisActivity = getIntent();
             Movie_ID = getIntent().getIntExtra("id", 0);
@@ -94,11 +100,10 @@ public class MovieDetails extends AppCompatActivity implements SharedPreferences
             moviePosterPath = getIntent().getStringExtra("poster_path");
             Log.d(TAG, " : PassedBy#Subhojit -> MovieDetails - getIncomingIntent and set details");
 
-            // Setting Details Content
+            // Setting Movie Details...
             setMovieDetails(Movie_ID, movieTitle, movieReleaseDate, movieRating, movieOverview, moviePosterPath);
-            Log.d(TAG, " : PassedBy#Subhojit -> MovieDetails - loading trailer");
-            loadingVideoTrailer(Movie_ID);
-            setReviewData(Movie_ID);
+            loadVideoTrailer(Movie_ID);
+            loadReviewData(Movie_ID);
         }
     }
 
@@ -124,8 +129,7 @@ public class MovieDetails extends AppCompatActivity implements SharedPreferences
 
     }
 
-    private void addOrRemoveMovieInSqlite(){
-
+    private void loadFavoriteCheckBoxListener(){
         favoriteCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
@@ -144,7 +148,7 @@ public class MovieDetails extends AppCompatActivity implements SharedPreferences
                     favoriteCheckbox.setChecked(sharedPreferences.getBoolean("ADDED", true));
                     editor.apply();*/
 
-                    favoriteCheckbox.setChecked(true);
+//                    favoriteCheckbox.setChecked(true);
 
                     FavoriteTaskEntry taskEntry = new FavoriteTaskEntry();
                     taskEntry.setId(id);
@@ -188,35 +192,47 @@ public class MovieDetails extends AppCompatActivity implements SharedPreferences
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
-        addOrRemoveMovieInSqlite();
+        loadFavoriteCheckBoxListener();
     }
 
-    private void setReviewData(int movie_id){
-        final TextView txtAuthor, txtContent;
-        txtAuthor = findViewById(R.id.author_name);
-        txtContent = findViewById(R.id.content);
-
+    private void loadReviewData(int movie_id){
         Log.d(TAG, "Subhojit --> setiingup the review data");
         API_Service apiService = MovieAPI.getClient().create(API_Service.class);
         Call<ReviewResponse> call = apiService.getReviews(movie_id, getString(R.string.API_KEY));
-        call.enqueue(new Callback<ReviewResponse>() {
-            @Override
-            public void onResponse(Call<ReviewResponse> call, Response<ReviewResponse> response) {
-                List<ReviewResult> reviewResults = response.body().getResults();
-                if(!response.isSuccessful()){
-                    return;
+
+            call.enqueue(new Callback<ReviewResponse>() {
+                @Override
+                public void onResponse(Call<ReviewResponse> call, Response<ReviewResponse> response) {
+                    List<ReviewResult> reviewResults = response.body().getResults();
+                    if(!response.isSuccessful()){
+                        return;
+                    }
+
+                    if(reviewResults.size() == 0){
+                        txtReview.setText("Reviews are not available!");
+                        return;
+                    }
+                    txtReview.setText("Reviews are available");
+                    txtReview.setTextColor(getResources().getColor(R.color.greenl1));
+
+                    layoutManager = new LinearLayoutManager(getApplicationContext());
+                    recyclerViewReviews.setLayoutManager(layoutManager);
+                    recyclerViewReviews.setHasFixedSize(true);
+                    reviewAdapter = new ReviewAdapter(reviewResults);
+                    recyclerViewReviews.setAdapter(reviewAdapter);
+                    reviewAdapter.notifyDataSetChanged();
                 }
 
-                txtAuthor.setText(reviewResults.get(0).getAuthor());
-                txtContent.setText(reviewResults.get(0).getContent());
-            }
+                @Override
+                public void onFailure(Call<ReviewResponse> call, Throwable t) {
 
-            @Override
-            public void onFailure(Call<ReviewResponse> call, Throwable t) {
+                }
+            });
 
-            }
-        });
+    }
 
+
+    private void reviewMessage(){
 
     }
 
@@ -225,50 +241,47 @@ public class MovieDetails extends AppCompatActivity implements SharedPreferences
         return true;
     }
 
-    public void loadingVideoTrailer(int movie_id){
-        Log.d(TAG, " : #Subhojit -> loadingVideoTrailer movie_id" + movie_id);
-
+    public void loadVideoTrailer(int movie_id){
+        Log.d(TAG, " : #Subhojit -> loadingVideoTrailer movie_id = " + movie_id);
         API_Service apiService = MovieAPI.getClient().create(API_Service.class);
         toast(apiService.toString());
-
         Call<TrailerResponse> call = apiService.getTrailers(movie_id, getString(R.string.API_KEY));
-        Log.d(TAG, " : #Subhojit -> After Fetch Trailers");
+        try{
+            call.enqueue(new Callback<TrailerResponse>() {
+                @Override
+                public void onResponse(Call<TrailerResponse> call, Response<TrailerResponse> response) {
+                    Log.d(TAG, " : #Subhojit -> Trailers_OnResponse..");
 
-        call.enqueue(new Callback<TrailerResponse>() {
-            @Override
-            public void onResponse(Call<TrailerResponse> call, Response<TrailerResponse> response) {
-                Log.d(TAG, " : #Subhojit -> Trailers_OnResponse..");
 
-                List<TrailerList> trailerList = response.body().getResults();
-                if(trailerList == null){
-                    toast("List is empty!");
-                    return;
+                    List<TrailerList> trailerList = response.body().getResults();
+
+                    toast(trailerList.toString());
+                    if (!response.isSuccessful()) {
+                        Log.d(TAG, " : #Subhojit -> No_Trailer_Response!!");
+                        return;
+                    }
+
+                    Log.d(TAG, " : #Subhojit -> Trailer_Responding..");
+
+                    recyclerViewTrailer.setLayoutManager(layoutManager);
+                    recyclerViewTrailer.setHasFixedSize(true);
+                    trailerAdapter = new TrailerAdapter(getApplicationContext(), trailerList);
+                    recyclerViewTrailer.setAdapter(trailerAdapter);
+                    recyclerViewTrailer.smoothScrollToPosition(0);
+                    trailerAdapter.notifyDataSetChanged();
                 }
-
-                toast(trailerList.toString());
-                if (!response.isSuccessful()) {
-                    Log.d(TAG, " : #Subhojit -> No_Trailer_Response!!");
-                    return;
+                @Override
+                public void onFailure(Call<TrailerResponse> call, Throwable throwable) {
+                    Log.e(TAG, throwable.toString());
+                    makeText(MovieDetails.this,
+                            "Error fetching trailer data --> " + call.toString() + throwable.toString(),
+                            LENGTH_SHORT).show();
                 }
-
-                Log.d(TAG, " : #Subhojit -> Trailer_Responding..");
-
-                recyclerViewTrailer.setLayoutManager(layoutManager);
-                recyclerViewTrailer.setHasFixedSize(true);
-                trailerAdapter = new TrailerAdapter(getApplicationContext(), trailerList);
-                recyclerViewTrailer.setAdapter(trailerAdapter);
-                recyclerViewTrailer.smoothScrollToPosition(0);
-                trailerAdapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onFailure(Call<TrailerResponse> call, Throwable throwable) {
-                Log.e(TAG, throwable.toString());
-                makeText(MovieDetails.this,
-                        "Error fetching trailer data --> " + call.toString() + throwable.toString(),
-                        LENGTH_SHORT).show();
-            }
-        });
+            });
+        }catch(NullPointerException | NumberFormatException | JsonSyntaxException | IndexOutOfBoundsException nfe){
+            nfe.printStackTrace();
+            System.out.print(nfe);
+        }
 
     }
 }

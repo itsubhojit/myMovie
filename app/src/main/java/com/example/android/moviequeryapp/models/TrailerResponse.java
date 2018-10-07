@@ -13,7 +13,7 @@ public class TrailerResponse {
 
     @SerializedName("results")
     @Expose
-    private List<TrailerList> results;
+    private List<TrailerList> results = null;
 
     public int getId() {
         return id;

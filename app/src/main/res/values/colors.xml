@@ -4,6 +4,7 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
     <color name="orange">#ff4500</color>
+    <color name="redl1">#FF1001</color>
     <color name="blue1">#2E86C1 </color>
     <color name="blue2">#3498DB </color>
     <color name="blue3">#5DADE2 </color>
@@ -11,4 +12,8 @@
     <color name="black">#212F3D </color>
     <color name="dark_gray">#34495E </color>
     <color name="dark_gray1">#5D6D7E </color>
+    <color name="greenl1">#7AFC50 </color>
+    <color name="greenl2">#5BFA28 </color>
+    <color name="greend">#35B20C </color>
+
 </resources>

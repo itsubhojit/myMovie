@@ -21,7 +21,6 @@ import java.util.List;
 
 public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.MyTrailerViewHolder> {
     private Context mContext;
-    List<MovieList> movieLists;
     private List<TrailerList> trailerListItems;
 
     public TrailerAdapter(Context context, List<TrailerList> list) {
@@ -47,7 +46,11 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.MyTraile
 
     @Override
     public int getItemCount() {
-        return trailerListItems.size();
+        if(trailerListItems == null){
+            return 0;
+        }else{
+            return trailerListItems.size();
+        }
     }
 
     public class MyTrailerViewHolder extends RecyclerView.ViewHolder {

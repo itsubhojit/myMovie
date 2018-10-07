@@ -13,42 +13,55 @@ public class MovieList{
     @SerializedName("vote_count")
     @Expose
     private Integer voteCount;
+
     @SerializedName("id")
     @Expose
     private Integer id;
+
     @SerializedName("video")
     @Expose
     private Boolean video;
+
     @SerializedName("vote_average")
     @Expose
     private double vote_average;
+
     @SerializedName("title")
     @Expose
     private String title;
+
     @SerializedName("popularity")
     @Expose
     private Double popularity;
+
     @SerializedName("poster_path")
     @Expose
     private String posterPath;
+
     @SerializedName("original_language")
     @Expose
     private String originalLanguage;
+
     @SerializedName("original_title")
     @Expose
     private String originalTitle;
+
     @SerializedName("genre_ids")
     @Expose
     private List<Integer> genreIds = null;
+
     @SerializedName("backdrop_path")
     @Expose
     private String backdropPath;
+
     @SerializedName("adult")
     @Expose
     private Boolean adult;
+
     @SerializedName("overview")
     @Expose
     private String overview;
+
     @SerializedName("release_date")
     @Expose
     private String releaseDate;
@@ -57,7 +70,21 @@ public class MovieList{
 
     }
 
-    public MovieList(Integer voteCount, Integer id, Boolean video, double voteAverage, String title, Double popularity, String posterPath, String originalLanguage, String originalTitle, List<Integer> genreIds, String backdropPath, Boolean adult, String overview, String releaseDate) {
+    public MovieList(Integer voteCount,
+                     Integer id,
+                     Boolean video,
+                     double voteAverage,
+                     String title,
+                     Double popularity,
+                     String posterPath,
+                     String originalLanguage,
+                     String originalTitle,
+                     List<Integer> genreIds,
+                     String backdropPath,
+                     Boolean adult,
+                     String overview,
+                     String releaseDate)
+    {
         this.voteCount = voteCount;
         this.id = id;
         this.video = video;

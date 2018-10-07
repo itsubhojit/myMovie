@@ -9,8 +9,11 @@ public class TrailerList {
     @SerializedName("id")
     @Expose
     private int id;
+
     @SerializedName("key")
+    @Expose
     private String key;
+
     @SerializedName("name")
     @Expose
     private String name;
@@ -18,15 +21,19 @@ public class TrailerList {
     @SerializedName("iso_639_1")
     @Expose
     private String iso6391;
+
     @SerializedName("iso_3166_1")
     @Expose
     private String iso31661;
+
     @SerializedName("site")
     @Expose
     private String site;
+
     @SerializedName("size")
     @Expose
     private Integer size;
+
     @SerializedName("type")
     @Expose
     private String type;

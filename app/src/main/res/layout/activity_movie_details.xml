@@ -115,7 +115,7 @@
                     android:textStyle="bold"
                     android:layout_margin="2dp"
                     android:paddingStart="10dp"
-                    android:textColor="@color/orange"
+                    android:textColor="@color/redl1"
                     android:background="@color/dark_gray"
                     app:layout_constraintTop_toBottomOf="@+id/checkBoxFavorite"/>
 
@@ -135,47 +135,32 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Review"
-                    android:fontFamily=""
+                    android:fontFamily="monospace"
                     android:textSize="25sp"
                     android:textStyle="bold"
                     android:layout_margin="5dp"
                     android:paddingStart="10dp"
-                    android:textColor="@color/orange"
+                    android:textColor="@color/redl1"
                     android:background="@color/dark_gray"
                     app:layout_constraintTop_toBottomOf="@+id/recyclerViewTrailer"/>
 
-                <TextView
+                <android.support.v7.widget.RecyclerView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Written by "
-                    android:id="@+id/author"
-                    android:textSize="15sp"
-                    android:textStyle="italic"
-                    android:paddingStart="25dp"
-                    android:layout_marginTop="18dp"
+                    android:id="@+id/recyclerViewReviews"
+                    android:layout_marginTop="10dp"
                     app:layout_constraintTop_toBottomOf="@id/Review"/>
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/author_name"
-                    android:id="@+id/author_name"
-                    android:textSize="20sp"
-                    android:textStyle="bold"
-                    android:paddingStart="95dp"
-                    android:layout_marginTop="14dp"
-                    app:layout_constraintTop_toBottomOf="@id/Review"/>
-
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/short_note"
+                    android:background="@color/black"
                     android:id="@+id/content"
                     android:textSize="15sp"
                     android:padding="10dp"
                     android:paddingBottom="2dp"
-                    app:layout_constraintTop_toBottomOf="@id/author"/>
+                    android:layout_marginTop="10dp"
+                    app:layout_constraintTop_toBottomOf="@id/recyclerViewReviews"/>
 
 
 

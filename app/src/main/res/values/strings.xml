@@ -25,4 +25,5 @@
     <string name="official_trailers">Official Trailers</string>
     <string name="author_name">Author</string>
     <string name="short_note">Short Note</string>
+    <string name="review_content">Review Contents</string>
 </resources>
